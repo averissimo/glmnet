@@ -72,8 +72,8 @@ cv.glmnet <-
   }
   fun = paste("cv", subclass, sep = ".")
   lambda = glmnet.object$lambda
-  cvstuff = do.call(fun, list(outlist, lambda, x, y, weights,
-    offset, foldid, type.measure, grouped, keep))
+  cvstuff = do.call(fun, list(outlist, lambda, x, y, weights, 
+    offset, foldid, type.measure, grouped, keep, mc.cores))
   cvm = cvstuff$cvm
   cvsd = cvstuff$cvsd
   nas=is.na(cvsd)
