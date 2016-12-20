@@ -1,6 +1,6 @@
 cv.coxnet <-
-function (outlist, lambda, x, y, weights, offset, foldid, type.measure,
-    grouped, keep = FALSE)
+  function (outlist, lambda, x, y, weights, offset, foldid, type.measure,
+            grouped, keep = FALSE, mc.cores = 1)
 {
     if (!is.null(offset)) {
         is.offset = TRUE
@@ -17,8 +17,7 @@ function (outlist, lambda, x, y, weights, offset, foldid, type.measure,
 ###We dont want to extrapolate lambdas on the small side
   mlami=max(sapply(outlist,function(obj)min(obj$lambda)))
   which_lam=lambda >= mlami
-
-    for (i in seq(nfolds)) {
+    cvraw.list = mclapply(seq(nfolds), function(i) {
         which = foldid == i
         fitobj = outlist[[i]]
         coefmat = predict(fitobj, type = "coeff",s=lambda[which_lam])
@@ -36,6 +35,11 @@ function (outlist, lambda, x, y, weights, offset, foldid, type.measure,
                 beta = coefmat)
             cvraw[i, seq(along = plk)] = plk
         }
+        return(cvraw)
+    }, mc.cores = mc.cores)
+    # consolidate cvraw in a matrix
+    for (i in seq(nfolds)) {
+      cvraw[i, seq(along = cvraw.list[[i]])] = cvraw.list[[i]]
     }
     status = y[, "status"]
     N = nfolds - apply(is.na(cvraw), 2, sum)

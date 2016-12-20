@@ -1,7 +1,7 @@
 cv.glmnet <-
   function (x, y, weights, offset = NULL, lambda = NULL, type.measure = c("mse",
-                                                           "deviance", "class", "auc", "mae"), nfolds = 10, foldid,
-            grouped = TRUE, keep = FALSE, parallel = FALSE, ...)
+            "deviance", "class", "auc", "mae"), nfolds = 10, foldid,
+            grouped = TRUE, keep = FALSE, mc.cores = 1, ...)
 {
   if (missing(type.measure))
     type.measure = "default"
@@ -40,9 +40,8 @@ cv.glmnet <-
   if (nfolds < 3)
     stop("nfolds must be bigger than 3; nfolds=10 recommended")
   outlist = as.list(seq(nfolds))
-  if (parallel) {
-#  if (parallel && require(foreach)) {
-    outlist = foreach(i = seq(nfolds), .packages = c("glmnet")) %dopar%
+  if (mc.cores > 1) {
+    outlist = mclapply(seq(nfolds), function(i)
     {
       which = foldid == i
 #      if (is.matrix(y))
@@ -55,7 +54,7 @@ cv.glmnet <-
       glmnet(x[!which, , drop = FALSE], y_sub, lambda = lambda,
              offset = offset_sub, weights = weights[!which],
              ...)
-    }
+    }, mc.cores = mc.cores)
   }
   else {
     for (i in seq(nfolds)) {

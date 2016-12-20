@@ -1,0 +1,20 @@
+---
+title: "R Notebook"
+output: 
+  github_document:
+    toc: true
+    dev: png
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+library(microbenchmark)
+library(devtools)
+```
+
+```{r}
+devtools::load_all('.')
+
+devtools::unload('.')
+```
+
