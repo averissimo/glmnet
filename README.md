@@ -1,8 +1,6 @@
 GLMNET (averissimo fork)
 ================
 
-This is a fork that implements mclapply instead of foreach in cv.glmnet. With `~21%` gains when adding parallization to `cv.coxnet`.
-
 -   [Load local glmnet for tests](#load-local-glmnet-for-tests)
     -   [Use dataset from glmnet package](#use-dataset-from-glmnet-package)
     -   [x1](#x1)
@@ -15,6 +13,8 @@ This is a fork that implements mclapply instead of foreach in cv.glmnet. With `~
     -   [x100](#x100-1)
     -   [Unload glmnet](#unload-glmnet)
 -   [Session Information](#session-information)
+
+This is a fork that implements mclapply instead of foreach in cv.glmnet. With `~21%` gains when adding parallization to `cv.coxnet`.
 
 The big improvement that can be seen in the tests below, is when adding `mclapply` in `cv.coxnet` for calculating deviances. It goes from `55s` to `43s` with this test dataset (`21%` average improvement).
 
