@@ -17,6 +17,7 @@ cv.coxnet <-
 ###We dont want to extrapolate lambdas on the small side
   mlami=max(sapply(outlist,function(obj)min(obj$lambda)))
   which_lam=lambda >= mlami
+    # not a lot of improvement here alone
     cvraw.list = mclapply(seq(nfolds), function(i) {
         which = foldid == i
         fitobj = outlist[[i]]
@@ -27,15 +28,16 @@ cv.coxnet <-
             plminusk = coxnet.deviance(x = x[!which, ], y = y[!which,
                 ], offset = offset[!which], weights = weights[!which],
                 beta = coefmat)
+            # cvraw[i, seq(along = plfull)] = plfull - plminusk
             return(plfull - plminusk)
         }
         else {
             plk = coxnet.deviance(x = x[which, ], y = y[which,
                 ], offset = offset[which], weights = weights[which],
                 beta = coefmat)
+            # cvraw[i, seq(along = plk)] = plk
             return(plk)
         }
-        return(cvraw)
     }, mc.cores = mc.cores)
     # consolidate cvraw in a matrix
     for (i in seq(nfolds)) {
