@@ -56,10 +56,8 @@ microbenchmark::microbenchmark(
 ```
 
     ## Unit: milliseconds
-    ##                                                        expr      min
-    ##  glmnet::cv.glmnet(new.x, y, family = "cox", mc.cores = 14) 170.2662
-    ##       lq     mean   median       uq      max neval
-    ##  174.367 181.2784 179.5234 184.1079 218.6926   100
+    ##                       r      min      lq     mean   median       uq      max neval
+    ##  glmnet::cv.glmnet(...) 170.2662 174.367 181.2784 179.5234 184.1079 218.6926   100
 
 x10
 ---
@@ -73,10 +71,8 @@ microbenchmark::microbenchmark(
 ```
 
     ## Unit: seconds
-    ##                                                        expr      min
-    ##  glmnet::cv.glmnet(new.x, y, family = "cox", mc.cores = 14) 1.262886
-    ##        lq     mean   median       uq      max neval
-    ##  1.408038 1.478927 1.433793 1.572727 1.793015    10
+    ##                    expr      min       lq     mean   median       uq      max neval
+    ##  glmnet::cv.glmnet(...) 1.262886 1.408038 1.478927 1.433793 1.572727 1.793015    10
 
 x100
 ----
@@ -90,10 +86,8 @@ microbenchmark::microbenchmark(
 ```
 
     ## Unit: seconds
-    ##                                                        expr      min
-    ##  glmnet::cv.glmnet(new.x, y, family = "cox", mc.cores = 14) 41.66963
-    ##        lq     mean   median       uq      max neval
-    ##  41.96889 42.92629 43.02708 43.37187 44.70409    10
+    ##                    expr      min       lq     mean   median       uq      max neval
+    ##  glmnet::cv.glmnet(...) 41.66963 41.96889 42.92629 43.02708 43.37187 44.70409    10
 
 Unload libraries
 ----------------
@@ -133,10 +127,8 @@ microbenchmark::microbenchmark(
 ```
 
     ## Unit: milliseconds
-    ##                                                       expr      min
-    ##  glmnet::cv.glmnet(new.x, y, family = "cox", parallel = T) 277.5171
-    ##        lq     mean  median      uq      max neval
-    ##  283.9814 288.4373 287.139 291.233 323.2931   100
+    ##                    expr      min       lq     mean  median      uq      max neval
+    ##  glmnet::cv.glmnet(...) 277.5171 283.9814 288.4373 287.139 291.233 323.2931   100
 
 x10
 ---
@@ -150,10 +142,8 @@ microbenchmark::microbenchmark(
 ```
 
     ## Unit: seconds
-    ##                                                       expr      min
-    ##  glmnet::cv.glmnet(new.x, y, family = "cox", parallel = T) 1.654761
-    ##        lq     mean   median       uq      max neval
-    ##  1.682095 1.727815 1.726412 1.772485 1.796287    10
+    ##                    expr      min       lq     mean   median       uq      max neval
+    ##  glmnet::cv.glmnet(...) 1.654761 1.682095 1.727815 1.726412 1.772485 1.796287    10
 
 x100
 ----
@@ -167,10 +157,8 @@ microbenchmark::microbenchmark(
 ```
 
     ## Unit: seconds
-    ##                                                       expr      min
-    ##  glmnet::cv.glmnet(new.x, y, family = "cox", parallel = T) 54.16612
-    ##       lq     mean   median       uq      max neval
-    ##  54.9759 57.67544 55.78311 61.68253 65.28653    10
+    ##                    expr      min      lq     mean   median       uq      max neval
+    ##  glmnet::cv.glmnet(...) 54.16612 54.9759 57.67544 55.78311 61.68253 65.28653    10
 
 Unload glmnet
 -------------
