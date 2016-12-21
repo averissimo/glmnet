@@ -27,13 +27,13 @@ cv.coxnet <-
             plminusk = coxnet.deviance(x = x[!which, ], y = y[!which,
                 ], offset = offset[!which], weights = weights[!which],
                 beta = coefmat)
-            cvraw[i, seq(along = plfull)] = plfull - plminusk
+            return(plfull - plminusk)
         }
         else {
             plk = coxnet.deviance(x = x[which, ], y = y[which,
                 ], offset = offset[which], weights = weights[which],
                 beta = coefmat)
-            cvraw[i, seq(along = plk)] = plk
+            return(plk)
         }
         return(cvraw)
     }, mc.cores = mc.cores)

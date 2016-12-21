@@ -10,9 +10,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE, error = TRUE)
 library(microbenchmark)
 library(devtools)
+library(futile.logger)
 ```
 
-# Load glmnetverissimo for tests
+# Load local glmnet for tests
 
 ```{r}
 devtools::load_all('.')
@@ -27,7 +28,7 @@ ntimes <- 3
 ```{r}
 new.x <- matrix(rep(x, 1), nrow = 1000, ncol = 30)
 microbenchmark::microbenchmark(
-  glmnetverissimo::cv.glmnet(new.x, y, family = 'cox', mc.cores = 3)
+  glmnet::cv.glmnet(new.x, y, family = 'cox', mc.cores = 14)
   , times = 100)
 ```
 
@@ -37,7 +38,7 @@ microbenchmark::microbenchmark(
 new.x <- matrix(rep(x, 10), nrow = 1000, ncol = 300)
 new.x <- new.x + rnorm(length(new.x))
 microbenchmark::microbenchmark(
-  glmnetverissimo::cv.glmnet(new.x, y, family = 'cox', mc.cores = 3)
+  glmnet::cv.glmnet(new.x, y, family = 'cox', mc.cores = 14)
   , times = ntimes)
 ```
 
@@ -47,7 +48,7 @@ microbenchmark::microbenchmark(
 new.x <- matrix(rep(x, 100), nrow = 1000, ncol = 3000)
 new.x <- new.x + rnorm(length(new.x))
 microbenchmark::microbenchmark(
-  glmnetverissimo::cv.glmnet(new.x, y, family = 'cox', mc.cores = 3)
+  glmnet::cv.glmnet(new.x, y, family = 'cox', mc.cores = 14)
   , times = ntimes)
 ```
 
@@ -62,7 +63,7 @@ devtools::unload('.')
 
 ```{r}
 library(doMC)
-registerDoMC(cores=3)
+registerDoMC(cores=14)
 library(glmnet)
 ```
 
