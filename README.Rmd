@@ -17,94 +17,83 @@ This is a fork that implements mclapply instead of foreach in cv.glmnet. With `~
 
 The big improvement that can be seen in the tests below, is when adding `mclapply` in `cv.coxnet` for calculating deviances. It goes from `55s` to `43s` with this test dataset (`21%` average improvement).
 
-# Load local glmnet for tests
+# Load a common dataset
+
+```{r data}
+data("CoxExample", package = 'glmnet')
+# number of repetitions
+ntimes      <- list()
+ntimes$x1   <- 100
+ntimes$x10  <- 100
+ntimes$x100 <- 20
+#
+new.x <- matrix(rep(x, 100), nrow = 1000, ncol = 3000)
+new.x <- new.x + rnorm(length(new.x))
+#
+n.cores <- 8
+```
+
+# Local glmnet for tests
 
 ```{r local, echo = F}
 devtools::load_all('.', recompile = T)
-```
-## Use dataset from glmnet package
-
-```{r data}
-data("CoxExample")
-ntimes <- 10
+#
+using.mclapply <- function(var.num, mc.cores = n.cores) {cv.glmnet(new.x[,seq(var.num)], y, family = 'cox', mc.cores = mc.cores)}
 ```
 
 ## x1
 
 ```{r local_x1}
-new.x <- matrix(rep(x, 1), nrow = 1000, ncol = 30)
-microbenchmark::microbenchmark(
-  glmnet::cv.glmnet(new.x, y, family = 'cox', mc.cores = 14)
-  , times = 100)
+microbenchmark::microbenchmark(using.mclapply(30), times = ntimes$x1)
 ```
 
 ## x10
 
 ```{r local_x10}
-new.x <- matrix(rep(x, 10), nrow = 1000, ncol = 300)
-new.x <- new.x + rnorm(length(new.x))
-microbenchmark::microbenchmark(
-  glmnet::cv.glmnet(new.x, y, family = 'cox', mc.cores = 14)
-  , times = ntimes)
+microbenchmark::microbenchmark(using.mclapply(300), times = ntimes$x10)
 ```
 
 ## x100
 
 ```{r local_x100}
-new.x <- matrix(rep(x, 100), nrow = 1000, ncol = 3000)
-new.x <- new.x + rnorm(length(new.x))
-microbenchmark::microbenchmark(
-  glmnet::cv.glmnet(new.x, y, family = 'cox', mc.cores = 14)
-  , times = ntimes)
+microbenchmark::microbenchmark(using.mclapply(3000), times = ntimes$x100)
 ```
 
-## Unload libraries
+__Clean environment of local glmnet__
 
 ```{r unload_local}
 devtools::unload('.')
+#
 ```
 
-# Load glmnet and doMC library
-
-Dataset is the same as before.
-
+# Cran's glmnet
 
 ```{r load_cran}
-library(doMC)
-registerDoMC(cores=14)
 library(glmnet)
+library(doMC)
+registerDoMC(cores = n.cores)
+using.foreach <- function(var.num) {cv.glmnet(new.x[,seq(var.num)], y, family = 'cox', parallel = T)}
 ```
 
 ## x1
 
 ```{r cran_x1}
-new.x <- matrix(rep(x, 1), nrow = 1000, ncol = 30)
-microbenchmark::microbenchmark(
-  glmnet::cv.glmnet(new.x, y, family = 'cox', parallel = T)
-  , times = 100)
+microbenchmark::microbenchmark(using.foreach(30), times = ntimes$x1)
 ```
 
 ## x10
 
 ```{r cran_x10}
-new.x <- matrix(rep(x, 10), nrow = 1000, ncol = 300)
-new.x <- new.x + rnorm(length(new.x))
-microbenchmark::microbenchmark(
-  glmnet::cv.glmnet(new.x, y, family = 'cox', parallel = T)
-  , times = ntimes)
+microbenchmark::microbenchmark(using.foreach(300), times = ntimes$x10)
 ```
 
 ## x100
 
 ```{r cran_x100}
-new.x <- matrix(rep(x, 100), nrow = 1000, ncol = 3000)
-new.x <- new.x + rnorm(length(new.x))
-microbenchmark::microbenchmark(
-  glmnet::cv.glmnet(new.x, y, family = 'cox', parallel = T)
-  , times = ntimes)
+microbenchmark::microbenchmark(using.foreach(3000), times = ntimes$x100)
 ```
 
-## Unload glmnet
+__Unload glmnet__
 
 ```{r unload_cran}
 unload(inst('glmnet'))
