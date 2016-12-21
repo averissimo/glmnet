@@ -1,4 +1,12 @@
-cv.mrelnet=function(outlist,lambda,x,y,weights,offset,foldid,type.measure,grouped,keep=FALSE){
+cv.mrelnet=function(outlist,lambda,x,y,weights,offset,foldid,type.measure,grouped,keep=FALSE, mc.cores = 1){
+  typenames=c(deviance="Mean-Squared Error",mse="Mean-Squared Error",mae="Mean Absolute Error")
+  if(type.measure=="default")type.measure="mse"
+  if(!match(type.measure,c("mse","mae","deviance"),FALSE)){
+    warning("Only 'mse', 'deviance' or 'mae'  available for multiresponse Gaussian models; 'mse' used")
+    type.measure="mse"
+  }
+  typename=typenames[type.measure]
+  if(type.measure=="deviance")type.measure="mse"
   ndim=dim(y)
   nc=ndim[2]
   nobs=ndim[1]

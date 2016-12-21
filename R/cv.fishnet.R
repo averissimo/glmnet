@@ -1,6 +1,6 @@
 cv.fishnet <-
-  function (outlist, lambda, x, y, weights, offset, foldid, type.measure,
-            grouped, keep = FALSE)
+  function (outlist, lambda, x, y, weights, offset, foldid, type.measure, 
+            grouped, keep = FALSE, mc.cores = 1) 
 {
   if (!is.null(offset)) {
     is.offset = TRUE

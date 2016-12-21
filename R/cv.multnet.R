@@ -1,6 +1,6 @@
 cv.multnet <-
-  function (outlist, lambda, x, y, weights, offset, foldid, type.measure,
-            grouped, keep = FALSE)
+  function (outlist, lambda, x, y, weights, offset, foldid, type.measure, 
+            grouped, keep = FALSE, mc.cores = 1) 
 {
   prob_min = 1e-05
   prob_max = 1 - prob_min

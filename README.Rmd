@@ -64,6 +64,7 @@ devtools::unload('.')
 ```{r}
 library(doMC)
 registerDoMC(cores=14)
+install.packages('glmnet')
 library(glmnet)
 ```
 
