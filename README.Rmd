@@ -8,6 +8,9 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message=FALSE, warning=FALSE}
 library(microbenchmark)
 library(devtools)
 library(futile.logger)
@@ -23,20 +26,27 @@ The big improvement that can be seen in the tests below, is when adding `mclappl
 data("CoxExample", package = 'glmnet')
 # number of repetitions
 ntimes      <- list()
-ntimes$x1   <- 100
-ntimes$x10  <- 100
-ntimes$x100 <- 20
+ntimes$x1   <- 10
+ntimes$x10  <- 10
+ntimes$x100 <- 10
 #
 new.x <- matrix(rep(x, 100), nrow = 1000, ncol = 3000)
 new.x <- new.x + rnorm(length(new.x))
 #
-n.cores <- 8
+n.cores <- 1
 ```
 
 # Local glmnet for tests
 
-```{r local, echo = F}
+```{r, include=FALSE}
 devtools::load_all('.', recompile = T)
+```
+
+```{r, eval=FALSE}
+devtools::load_all('.', recompile = T)
+```
+
+```{r local, echo=FALSE}
 #
 using.mclapply <- function(var.num, mc.cores = n.cores) {cv.glmnet(new.x[,seq(var.num)], y, family = 'cox', mc.cores = mc.cores)}
 ```
