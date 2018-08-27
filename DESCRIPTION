@@ -1,4 +1,4 @@
-Package: glmnet
+Package: glmnet.mclapply
 Type: Package
 Title: Lasso and Elastic-Net Regularized Generalized Linear Models
 Version: 2.0-16
