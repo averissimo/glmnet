@@ -10,6 +10,11 @@ output:
 knitr::opts_chunk$set(echo = TRUE, error = TRUE)
 ```
 
+```{r, eval=FALSE, include=FALSE}
+rmarkdown::render('README.Rmd')
+```
+
+
 ```{r, message=FALSE, warning=FALSE}
 library(microbenchmark)
 library(devtools)
@@ -23,7 +28,6 @@ The big improvement that can be seen in the tests below, is when adding `mclappl
 # Load a common dataset
 
 ```{r data}
-data("CoxExample", package = 'glmnet')
 # number of repetitions
 ntimes      <- list()
 ntimes$x1   <- 10
