@@ -71,7 +71,7 @@ lognet=function(x,is.sparse,ix,jx,y,weights,offset,alpha,nobs,nvars,jd,vp,cl,ne,
                     dev=double(nlam),
                     alm=double(nlam),
                     nlp=integer(1),
-                    jerr=integer(1),PACKAGE="glmnet"
+                    jerr=integer(1),PACKAGE="glmnet.mclapply"
                     )
   else .Fortran("lognet",
           parm=alpha,nobs,nvars,nc,as.double(x),y,offset,jd,vp,cl,ne,nx,nlam,flmin,ulam,thresh,isd,intr,maxit,kopt,
@@ -84,7 +84,7 @@ lognet=function(x,is.sparse,ix,jx,y,weights,offset,alpha,nobs,nvars,jd,vp,cl,ne,
           dev=double(nlam),
           alm=double(nlam),
           nlp=integer(1),
-          jerr=integer(1),PACKAGE="glmnet"
+          jerr=integer(1),PACKAGE="glmnet.mclapply"
           )
 if(fit$jerr!=0){
   errmsg=jerr(fit$jerr,maxit,pmax=nx,family)

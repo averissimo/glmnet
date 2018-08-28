@@ -1,7 +1,12 @@
 cv.coxnet <-
   function (outlist, lambda, x, y, weights, offset, foldid, type.measure,
-            grouped, keep = FALSE, mc.cores = 1)
+            grouped, keep = FALSE, parallel = FALSE)
 {
+    parallel <- parallel * 1
+    if (parallel == 0){
+      parallel <- 1
+    }
+    
     if (!is.null(offset)) {
         is.offset = TRUE
         offset = drop(offset)
@@ -38,7 +43,7 @@ cv.coxnet <-
             # cvraw[i, seq(along = plk)] = plk
             return(plk)
         }
-    }, mc.cores = mc.cores)
+    }, mc.cores = parallel)
     # consolidate cvraw in a matrix
     for (i in seq(nfolds)) {
       cvraw[i, seq(along = cvraw.list[[i]])] = cvraw.list[[i]]

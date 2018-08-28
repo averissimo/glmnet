@@ -1,8 +1,13 @@
 cv.glmnet <-
   function (x, y, weights, offset = NULL, lambda = NULL, type.measure = c("mse",
             "deviance", "class", "auc", "mae"), nfolds = 10, foldid,
-            grouped = TRUE, keep = FALSE, mc.cores = 1, ...)
+            grouped = TRUE, keep = FALSE, parallel = FALSE, ...)
 {
+  parallel <- parallel * 1
+  if (parallel == 0){
+    parallel <- 1
+  }
+  
   if (missing(type.measure))
     type.measure = "default"
   else type.measure = match.arg(type.measure)
@@ -40,7 +45,7 @@ cv.glmnet <-
   if (nfolds < 3)
     stop("nfolds must be bigger than 3; nfolds=10 recommended")
   outlist = as.list(seq(nfolds))
-  if (mc.cores > 1) {
+  if (parallel > 1) {
     outlist = mclapply(seq(nfolds), function(i)
     {
       which = foldid == i
@@ -54,7 +59,7 @@ cv.glmnet <-
       glmnet(x[!which, , drop = FALSE], y_sub, lambda = lambda,
              offset = offset_sub, weights = weights[!which],
              ...)
-    }, mc.cores = mc.cores)
+    }, mc.cores = parallel)
   }
   else {
     for (i in seq(nfolds)) {
@@ -73,7 +78,7 @@ cv.glmnet <-
   fun = paste("cv", subclass, sep = ".")
   lambda = glmnet.object$lambda
   cvstuff = do.call(fun, list(outlist, lambda, x, y, weights, 
-    offset, foldid, type.measure, grouped, keep, mc.cores))
+    offset, foldid, type.measure, grouped, keep, parallel))
   cvm = cvstuff$cvm
   cvsd = cvstuff$cvsd
   nas=is.na(cvsd)

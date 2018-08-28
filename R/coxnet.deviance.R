@@ -22,7 +22,7 @@ coxnet.deviance=function(pred=NULL,y,x=0,offset=pred,weights=NULL,beta=NULL){
     nobs,nvars,x,ty,tevent,offset,weights,nvec,beta,
     flog=double(nvec),
     jerr=integer(1),
-    PACKAGE="glmnet")
+    PACKAGE="glmnet.mclapply")
   if(fit$jerr!=0){
   errmsg=jerr(fit$jerr,maxit=0,pmax=0,family="cox")
   if(errmsg$fatal)stop(errmsg$msg,call.=FALSE)

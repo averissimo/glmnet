@@ -22,7 +22,7 @@ fit=if(is.sparse).Fortran("spfishnet",
   dev=double(nlam),
   alm=double(nlam),
   nlp=integer(1),
-  jerr=integer(1),PACKAGE="glmnet"
+  jerr=integer(1),PACKAGE="glmnet.mclapply"
   )
 else .Fortran("fishnet",
               parm=alpha,nobs,nvars,as.double(x),y,offset,weights,jd,vp,cl,ne,nx,nlam,flmin,ulam,thresh,isd,intr,maxit,
@@ -35,7 +35,7 @@ else .Fortran("fishnet",
               dev=double(nlam),
               alm=double(nlam),
               nlp=integer(1),
-              jerr=integer(1),PACKAGE="glmnet"
+              jerr=integer(1),PACKAGE="glmnet.mclapply"
               )
 if(fit$jerr!=0){
   errmsg=jerr(fit$jerr,maxit,pmax=nx,family="poisson")

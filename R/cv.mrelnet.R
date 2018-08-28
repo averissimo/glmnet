@@ -1,4 +1,8 @@
-cv.mrelnet=function(outlist,lambda,x,y,weights,offset,foldid,type.measure,grouped,keep=FALSE, mc.cores = 1){
+cv.mrelnet=function(outlist,lambda,x,y,weights,offset,foldid,type.measure,grouped,keep=FALSE, parallel = FALSE){
+  parallel <- parallel * 1
+  if (parallel == 0){
+    parallel <- 1
+  }
   typenames=c(deviance="Mean-Squared Error",mse="Mean-Squared Error",mae="Mean Absolute Error")
   if(type.measure=="default")type.measure="mse"
   if(!match(type.measure,c("mse","mae","deviance"),FALSE)){

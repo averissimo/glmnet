@@ -4,6 +4,8 @@ output:
   github_document:
     toc: true
     dev: png
+params:
+  n.cores: !r 5
 ---
 
 ```{r setup, include=FALSE}
@@ -19,103 +21,77 @@ rmarkdown::render('README.Rmd')
 library(microbenchmark)
 library(devtools)
 library(futile.logger)
-```
-
-This is a fork that implements mclapply instead of foreach in cv.glmnet. With `~21%` gains when adding parallization to `cv.coxnet`.
-
-The big improvement that can be seen in the tests below, is when adding `mclapply` in `cv.coxnet` for calculating deviances. It goes from `55s` to `43s` with this test dataset (`21%` average improvement).
-
-# Load a common dataset
-
-```{r data}
-# number of repetitions
-ntimes      <- list()
-ntimes$x1   <- 10
-ntimes$x10  <- 10
-ntimes$x100 <- 10
-#
-new.x <- matrix(rep(x, 100), nrow = 1000, ncol = 3000)
-new.x <- new.x + rnorm(length(new.x))
-#
-n.cores <- 1
-```
-
-# Local glmnet for tests
-
-```{r, include=FALSE}
-devtools::load_all('.', recompile = T)
-```
-
-```{r, eval=FALSE}
-devtools::load_all('.', recompile = T)
-```
-
-```{r local, echo=FALSE}
-#
-using.mclapply <- function(var.num, mc.cores = n.cores) {cv.glmnet(new.x[,seq(var.num)], y, family = 'cox', mc.cores = mc.cores)}
-```
-
-## x1
-
-```{r local_x1}
-microbenchmark::microbenchmark(using.mclapply(30), times = ntimes$x1)
-```
-
-## x10
-
-```{r local_x10}
-microbenchmark::microbenchmark(using.mclapply(300), times = ntimes$x10)
-```
-
-## x100
-
-```{r local_x100}
-microbenchmark::microbenchmark(using.mclapply(3000), times = ntimes$x100)
-```
-
-__Clean environment of local glmnet__
-
-```{r unload_local}
-devtools::unload('.')
-#
-```
-
-# Cran's glmnet
-
-```{r load_cran}
-library(glmnet)
+library(testthat)
 library(doMC)
-registerDoMC(cores = n.cores)
-using.foreach <- function(var.num) {cv.glmnet(new.x[,seq(var.num)], y, family = 'cox', parallel = T)}
+library(ggfortify)
+library(glmnet)
+devtools::load_all()
 ```
 
-## x1
+This is a fork that implements mclapply instead of foreach in cv.glmnet. With gains when adding parallization to `cv.coxnet`.
 
-```{r cran_x1}
-microbenchmark::microbenchmark(using.foreach(30), times = ntimes$x1)
+The big improvement that can be seen in the tests below, is when adding `mclapply` in `cv.coxnet` for calculating deviances.
+
+
+## Load data from package itself
+
+```{r}
+data("CoxExample")
+flog.info('x', head(x), capture = TRUE)
+flog.info('y', head(y), capture = TRUE)
 ```
 
-## x10
+## Register doMC cores for classic glmnet package
 
-```{r cran_x10}
-microbenchmark::microbenchmark(using.foreach(300), times = ntimes$x10)
+```{r}
+registerDoMC(cores=params$n.cores)
 ```
 
-## x100
+## Benchmark between glmnet and glmnet.mclapply
 
-```{r cran_x100}
-microbenchmark::microbenchmark(using.foreach(3000), times = ntimes$x100)
+```{r}
+microbenchmark::microbenchmark(
+  glmnet.mclapply.no.parallel = glmnet.mclapply::cv.glmnet(x,y, family = 'cox'),
+  glmnet.mclapply.with.parallel = glmnet.mclapply::cv.glmnet(x,y, family = 'cox', parallel = params$n.cores),
+  glmnet.no.parallel = glmnet::cv.glmnet(x,y, family = 'cox'),
+  glmnet.with.parallel = glmnet::cv.glmnet(x,y, family = 'cox', parallel=TRUE),
+  times = 5)
 ```
 
-__Unload glmnet__
+## Testing if results are the same
 
-```{r unload_cran}
-unload(inst('glmnet'))
+*note*: There will be errors if this fails
+
+```{r}
+set.seed(1985)
+res.mcl <- glmnet.mclapply::cv.glmnet(x,y, family = 'cox', parallel = params$n.cores)
+set.seed(1985)
+res.prl <- glmnet::cv.glmnet(x,y, family = 'cox', parallel=TRUE)
+
+expect_equal(res.mcl$lambda.min, res.prl$lambda.min)
+expect_equal(res.mcl$lambda.1se, res.prl$lambda.1se)
+expect_equal(res.mcl$lambda, res.prl$lambda)
+
+expect_equal(res.mcl$cvm, res.prl$cvm)
+expect_equal(res.mcl$cvsd, res.prl$cvsd)
+expect_equal(coef(res.mcl, 'lambda.min'), coef(res.prl, 'lambda.min'))
+
+expect_equal(res.mcl$glmnet.fit$beta, res.prl$glmnet.fit$beta)
+
+futile.logger::flog.info('Sucess!! results are the same')
 ```
+
+## Plot the cross-validation
+
+```{r, echo=FALSE}
+loose.rock::multiplot(autoplot(res.mcl) + ggtitle('mclapply'),
+                      autoplot(res.prl) + ggtitle('parallel'))
+```
+
 
 # Session Information
 
-```{r session_info}
+```{r session_info, echo=FALSE}
 sessionInfo()
 ```
 

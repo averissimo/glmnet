@@ -38,7 +38,7 @@ fit=if(is.sparse).Fortran("multspelnet",
         rsq=double(nlam),
         alm=double(nlam),
         nlp=integer(1),
-        jerr=integer(1),PACKAGE="glmnet"
+        jerr=integer(1),PACKAGE="glmnet.mclapply"
         )
 else .Fortran("multelnet",
           parm=alpha,nobs,nvars,nr,as.double(x),y,weights,jd,vp,cl,ne,nx,nlam,flmin,ulam,thresh,isd,jsd,intr,maxit,
@@ -50,7 +50,7 @@ else .Fortran("multelnet",
           rsq=double(nlam),
           alm=double(nlam),
           nlp=integer(1),
-          jerr=integer(1),PACKAGE="glmnet"
+          jerr=integer(1),PACKAGE="glmnet.mclapply"
           )
 if(fit$jerr!=0){
   errmsg=jerr(fit$jerr,maxit,pmax=nx,family="mrelnet")

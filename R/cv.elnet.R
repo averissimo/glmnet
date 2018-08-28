@@ -1,6 +1,6 @@
 cv.elnet <-
 function (outlist, lambda, x, y, weights, offset, foldid, type.measure, 
-            grouped, keep = FALSE, mc.cores = 1) 
+            grouped, keep = FALSE, parallel = FALSE) 
 {
   if (!is.null(offset))
     y = y - drop(offset)

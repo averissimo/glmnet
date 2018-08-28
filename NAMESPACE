@@ -1,4 +1,4 @@
-useDynLib("glmnet")
+useDynLib("glmnet.mclapply")
 importFrom(utils,head,tail,packageDescription)
 importFrom("graphics", "abline", "axis", "matplot", "points",
      "segments", "text")

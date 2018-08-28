@@ -21,3 +21,4 @@ NeedsCompilation: yes
 Packaged: 2018-03-12 04:20:32 UTC; hastie
 Repository: CRAN
 Date/Publication: 2018-04-02 12:06:40 UTC
+RoxygenNote: 6.1.0
