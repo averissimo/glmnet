@@ -8,6 +8,10 @@ params:
   n.cores: !r 5
 ---
 
+Fork of `glmnet` that implements mclapply instead of foreach in cross-validation with some speed-ups. 
+
+The big improvement that can be seen in the tests below, is when adding `mclapply` in `cv.coxnet` for calculating deviances.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, error = TRUE)
 ```
@@ -16,6 +20,7 @@ knitr::opts_chunk$set(echo = TRUE, error = TRUE)
 rmarkdown::render('README.Rmd')
 ```
 
+## Required Libraries
 
 ```{r, message=FALSE, warning=FALSE}
 library(microbenchmark)
@@ -27,11 +32,6 @@ library(ggfortify)
 library(glmnet)
 devtools::load_all()
 ```
-
-This is a fork that implements mclapply instead of foreach in cv.glmnet. With gains when adding parallization to `cv.coxnet`.
-
-The big improvement that can be seen in the tests below, is when adding `mclapply` in `cv.coxnet` for calculating deviances.
-
 
 ## Load data from package itself
 
