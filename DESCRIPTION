@@ -3,7 +3,8 @@ Type: Package
 Title: Lasso and Elastic-Net Regularized Generalized Linear Models
 Version: 2.0-16
 Date: 2018-03-12
-Author: Jerome Friedman [aut, cre],
+Author: Andre Verissimo [ctb]
+        Jerome Friedman [aut, cre],
 	Trevor Hastie [aut, cre],
 	Rob Tibshirani [aut, cre],
 	Noah Simon [aut, ctb],
